@@ -521,7 +521,6 @@ def run_mlp_pipeline(col_feature, col_target, train_df, valid_df, test_df,
 
 
 
-
 ##############################################################################
 ## Settings
 
@@ -935,17 +934,6 @@ for test_year_month in test_year_month_list:
         test_df_windowed = pd.concat([train_df, valid_df, test_df]).copy()
         test_df_windowed = test_df_windowed.tail(len(test_df) + both_window_size-1)
 
-
-        # train_df = model_df[model_df['year_month'].isin(train_year_month_list)].copy()
-        # valid_df = model_df[model_df['year_month'].isin(valid_year_month_list)].copy()
-        # test_df = model_df[model_df['year_month'].isin(test_year_month_list)].copy()
-        # 
-        # valid_df_windowed = pd.concat([train_df,valid_df]).copy()
-        # valid_df_windowed = valid_df_windowed.tail(len(valid_df) + both_window_size-1)
-        # 
-        # test_df_windowed = pd.concat([train_df, valid_df, test_df]).copy()
-        # test_df_windowed = test_df_windowed.tail(len(test_df) + both_window_size-1)
-
         (y_pred_list, y_score_list) = run_mlp_pipeline(
             col_feature, col_target, train_df, valid_df_windowed, test_df_windowed,
             both_epochs, batch_size, learning_rate, both_window_size, both_hidden_size,
@@ -961,10 +949,6 @@ for test_year_month in test_year_month_list:
         pred_df[f'pred_{feature_type}'] = pred_df[f'pred_{feature_type}'].fillna(1)
 
 
-
-
-
-
     def get_pred_combi(row, feature_type_list):
         pred_list = [(row[f'pred_{feature_type}']-1) for feature_type in feature_type_list]
         pred_list = [x for x in pred_list if x != 0]
@@ -976,78 +960,10 @@ for test_year_month in test_year_month_list:
 
     pred_df['pred_combi'] = pred_df.apply(get_pred_combi, axis=1, feature_type_list=feature_type_list)
 
-
-
-
-
-
-
-
-
-
-
-
-    # data_df_temp = data_df_temp.dropna()
-    # data_df_temp.reset_index(drop=True, inplace=True)
-    # 
-    # train_df = data_df_temp[data_df_temp['year_month'].isin(train_year_month_list)].copy()
-    # valid_df = data_df_temp[data_df_temp['year_month'].isin(valid_year_month_list)].copy()
-    # test_df = data_df_temp[data_df_temp['year_month'].isin(test_year_month_list)].copy()
-    # 
-    # valid_df_windowed = pd.concat([train_df,valid_df]).copy()
-    # valid_df_windowed = valid_df_windowed.tail(len(valid_df) + both_window_size-1)
-    # 
-    # test_df_windowed = pd.concat([train_df, valid_df, test_df]).copy()
-    # test_df_windowed = test_df_windowed.tail(len(test_df) + both_window_size-1)
-
-
-    # (y_pred_list, y_score_list) = run_mlp_pipeline(
-    #     [col_price] + col_feature_both, col_target, train_df, valid_df_windowed, test_df_windowed,
-    #     both_epochs, batch_size, learning_rate, both_window_size, both_hidden_size,
-    #     use_early_stop=use_early_stop, use_weighted_sampler=use_weighted_sampler,
-    #     use_dual_lstm=both_use_dual_lstm, use_gru_model=both_use_gru_model,
-    #     )
-    # test_df[f'pred_both'] = y_pred_list
-    # test_df[f'score_both'] = y_score_list
-
-    # 
-    # for feature_type in feature_type_list:
-    #     if feature_type == "VMD":
-    #         col_feature = [col_price] + [f"VMD_{j}" for j in range(vmd_k)]
-    # 
-    #     if feature_type.split('_')[0] == "VG":
-    #         centrality_type = feature_type.split('_')[1]
-    #         col_feature = [col_price]
-    #         for k in range(1, vg_k):
-    #             col_feature += [f"VG_{centrality_type}_{k}"]
-    # 
-    #     (y_pred_list, y_score_list) = run_mlp_pipeline(
-    #         col_feature, col_target, train_df, valid_df_windowed, test_df_windowed,
-    #         both_epochs, batch_size, learning_rate, both_window_size, both_hidden_size,
-    #         use_early_stop=use_early_stop, use_weighted_sampler=use_weighted_sampler,
-    #         use_dual_lstm=both_use_dual_lstm, use_gru_model=both_use_gru_model,
-    #         )
-    #     test_df[f'pred_{feature_type}'] = y_pred_list
-    #     test_df[f'score_{feature_type}'] = y_score_list
-    # 
-    # 
-    # def get_pred_combi(row, feature_type_list):
-    #     pred_list = [(row[f'pred_{feature_type}']-1) for feature_type in feature_type_list]
-    #     pred_list = [x for x in pred_list if x != 0]
-    #     if len(pred_list) == 0:
-    #         out = 1
-    #     else:
-    #         out = int(np.sign(np.mean(pred_list))) + 1
-    #     return out
-    # 
-    # test_df['pred_combi'] = test_df.apply(get_pred_combi, axis=1, feature_type_list=feature_type_list)
-    
-    
     result_dict[test_year_month]['prediction_data'] = pred_df.copy()
     test_df_full = pd.concat([test_df_full, pred_df])
 
-    # for pred_type in ['both','combi']:
-    for pred_type in ['combi']: 
+    for pred_type in ['combi']:
         col_pred = f'pred_{pred_type}'
         (profit_accuracy, pred_count, total_count, short_accuracy, long_accuracy) = get_profit_accuracy(pred_df, col_pred, col_target_gains)
         print(f"# {pred_type}: {profit_accuracy:,.3f}, {pred_count:,.0f} out of {total_count:,.0f}")
