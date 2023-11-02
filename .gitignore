@@ -1,0 +1,9 @@
+.idea*
+*.png
+__pycache*
+*.csv
+*.pkl
+*.bak
+info/*
+recordings/*
+data/input/*
