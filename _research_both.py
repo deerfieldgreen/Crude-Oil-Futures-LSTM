@@ -376,21 +376,6 @@ feature_map_dict = {
     "VGD60": ['close_D1', 'VG_degree_60_0', 'VG_degree_60_1', 'VG_degree_60_2'],
     # combi: 0.562, 59 / 1,482
 
-    # "BOTH": [
-    #     'close_D1',
-    #     'D1-SMA10-val',
-    #     'D1-BB20-upper',
-    #     'D1-BB20-mid',
-    #     'D1-BB20-lower',
-    #     'D1-ROC2-val',
-    #     'D1-MOM4-val',
-    #     'D1-RSI10-val',
-    #     'D1-CCI20-val',
-    #     'D1-PSAR-val',
-    # 
-    #     'us_oil_supply',
-    # ],
-
     # "TECH": [
     #     'close_D1',
     #     'D1-SMA10-val',
